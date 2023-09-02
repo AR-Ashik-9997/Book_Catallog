@@ -60,15 +60,25 @@ model ReviewAndRating {
 }
 
 model Order {
-  id          String   @id @default(uuid())
+  id          String        @id @default(uuid())
   userId      String
-  status      String   @default("pending")
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
-  OrderedBook Json
+  orderedBooks Json[]
+  status      String       @default("pending")
+  createdAt   DateTime      @default(now())
+  user        User          @relation(fields: [userId], references: [id])
 
   @@map("orders")
 }
+
+// model OrderedBook {
+//   id       String @id @default(uuid())
+//   orderId  String
+//   bookId   String
+//   quantity Int
+//   order    Order  @relation(fields: [orderId], references: [id])
+
+//   @@map("orderedBook")
+// }
 
 enum Role {
   admin
