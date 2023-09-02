@@ -28,7 +28,7 @@ model User {
 model Category {
   id    String @id @default(uuid())
   title String
-  Book  Book[]
+  books  Book[]
 
   @@map("categories")
 }
@@ -69,16 +69,6 @@ model Order {
 
   @@map("orders")
 }
-
-// model OrderedBook {
-//   id       String @id @default(uuid())
-//   orderId  String
-//   bookId   String
-//   quantity Int
-//   order    Order  @relation(fields: [orderId], references: [id])
-
-//   @@map("orderedBook")
-// }
 
 enum Role {
   admin

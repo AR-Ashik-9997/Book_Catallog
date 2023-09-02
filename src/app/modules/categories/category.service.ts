@@ -4,13 +4,13 @@ import prisma from '../../../shared/prisma';
 const createCategory = async (payload: Category): Promise<Category> => {
   const result = await prisma.category.create({
     data: payload,
-    include: { Book: true },
+    include: { books: true },
   });
   return result;
 };
 const getAllCategory = async (): Promise<Category[]> => {
   const result = await prisma.category.findMany({
-    include: { Book: true },
+    include: { books: true },
   });
   return result;
 };
@@ -19,7 +19,7 @@ const getSingleCategory = async (id: string): Promise<Category | null> => {
     where: {
       id,
     },
-    include: { Book: true },
+    include: { books: true },
   });
   return result;
 };
@@ -32,7 +32,7 @@ const updateSingleCategory = async (
       id,
     },
     data: payload,
-    include: { Book: true },
+    include: { books: true },
   });
   return result;
 };
@@ -41,7 +41,7 @@ const deleteSingleCategory = async (id: string): Promise<Category> => {
     where: {
       id,
     },
-    include: { Book: true },
+    include: { books: true },
   });
   return result;
 };
