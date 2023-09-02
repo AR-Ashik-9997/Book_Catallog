@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { User } from '@prisma/client';
 import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
@@ -7,11 +8,12 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 import { ILoginUser, IUserLoginResponse } from './auth.interface';
 
-const createUser = async (payload: User): Promise<User> => {
+const createUser = async (payload: User): Promise<Omit<User, 'password'>> => {
   const result = await prisma.user.create({
     data: payload,
   });
-  return result;
+  const { password: _, ...userWithoutPassword } = result;
+  return userWithoutPassword;
 };
 
 const LoginUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
