@@ -26,6 +26,7 @@ const createUser = z.object({
     }),
   }),
 });
+
 const loginUser = z.object({
   body: z.object({
     email: z.string({
