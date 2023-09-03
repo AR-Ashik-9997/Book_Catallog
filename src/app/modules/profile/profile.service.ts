@@ -2,7 +2,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { User } from '@prisma/client';
+import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
+import ApiError from '../../../errors/ApiError';
 import prisma from '../../../shared/prisma';
 
 const getProfile = async (
@@ -13,13 +15,11 @@ const getProfile = async (
       id: user.id,
     },
   });
-
-  if (result) {
-    const { id, ...profileWithoutId } = result;
-    return profileWithoutId;
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Profile not found');
   }
-
-  return null;
+  const { id, ...profileWithoutId } = result;
+  return profileWithoutId;
 };
 
 export const ProfileService = { getProfile };

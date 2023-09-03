@@ -38,4 +38,8 @@ const getSingleOrder = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const OrderController = { createOrder, getAllOrder, getSingleOrder };
+export const OrderController = {
+  createOrder,
+  getAllOrder,
+  getSingleOrder,
+};

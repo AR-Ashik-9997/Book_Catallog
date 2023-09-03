@@ -1,4 +1,6 @@
-import { Book, Category, Prisma } from '@prisma/client';
+import { Book, Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -7,7 +9,10 @@ import { BookSearchableFields } from './book.constant';
 import { IBookFilter } from './book.interface';
 
 const createBook = async (payload: Book): Promise<Book> => {
-  const result = await prisma.book.create({ data: payload });
+  const result = await prisma.book.create({
+    data: payload,
+    include: { category: true },
+  });
   return result;
 };
 const getAllBooks = async (
@@ -103,15 +108,15 @@ const getAllBooks = async (
 };
 
 const getBooksByCategoryId = async (
-  id: string,
+  categoryId: string,
   paginationOptions: IPaginationOptions
-): Promise<IGenericResponse<Category[]>> => {
+): Promise<IGenericResponse<Book[]>> => {
   const { page, size, skip } =
     paginationHelpers.calculatePagination(paginationOptions);
 
-  const result = await prisma.category.findMany({
-    where: { id },
-    include: { books: true },
+  const result = await prisma.book.findMany({
+    where: { categoryId },
+    include: { category: true },
     skip,
     take: size,
     orderBy:
@@ -124,7 +129,10 @@ const getBooksByCategoryId = async (
           },
   });
 
-  const total = await prisma.category.count();
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
+  const total = await prisma.book.count();
   const totalPages = Math.ceil(total / size);
 
   return {
@@ -141,8 +149,10 @@ const getBooksByCategoryId = async (
 const getSingleBook = async (id: string): Promise<Book | null> => {
   const result = await prisma.book.findUnique({
     where: { id },
-    include: { ReviewAndRating: true },
   });
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
   return result;
 };
 const updateSingleBooks = async (
@@ -152,14 +162,16 @@ const updateSingleBooks = async (
   const result = await prisma.book.update({
     where: { id },
     data: payload,
-    include: { ReviewAndRating: true },
   });
   return result;
 };
 const deleteSingleBooks = async (id: string): Promise<Book> => {
+  const existingBook = await prisma.book.findUnique({ where: { id } });
+  if (!existingBook) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found');
+  }
   const result = await prisma.book.delete({
     where: { id },
-    include: { ReviewAndRating: true },
   });
   return result;
 };

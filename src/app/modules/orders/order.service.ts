@@ -1,5 +1,7 @@
 import { Order } from '@prisma/client';
+import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
+import ApiError from '../../../errors/ApiError';
 import prisma from '../../../shared/prisma';
 import { ICreateOrderedBook } from './order.interface';
 
@@ -36,6 +38,14 @@ const getSingleOrder = async (id: string): Promise<Order | null> => {
       id,
     },
   });
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+  }
   return result;
 };
-export const OrderService = { createOrder, getAllOrder, getSingleOrder };
+
+export const OrderService = {
+  createOrder,
+  getAllOrder,
+  getSingleOrder,
+};

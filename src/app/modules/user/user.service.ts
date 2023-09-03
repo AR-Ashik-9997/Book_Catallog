@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { User } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import prisma from '../../../shared/prisma';
 import { UserWithoutPassword } from './user.interface';
 
@@ -22,7 +24,7 @@ const getSingleUser = async (
     },
   });
   if (!result) {
-    return null;
+    throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
   }
   const { password, ...userWithoutPassword } = result;
 
@@ -36,7 +38,6 @@ const updateSingleUser = async (
   const result = await prisma.user.update({
     where: { id },
     data: payload,
-    include: { ReviewAndRating: true, Order: true },
   });
   return result;
 };
@@ -44,7 +45,6 @@ const updateSingleUser = async (
 const deleteSingleUser = async (id: string): Promise<User> => {
   const result = await prisma.user.delete({
     where: { id },
-    include: { ReviewAndRating: true, Order: true },
   });
   return result;
 };
