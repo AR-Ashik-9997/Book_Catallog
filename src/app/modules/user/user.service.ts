@@ -43,6 +43,10 @@ const updateSingleUser = async (
 };
 
 const deleteSingleUser = async (id: string): Promise<User> => {
+  const existingUser = await prisma.user.findUnique({ where: { id } });
+  if (!existingUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'user not found');
+  }
   return await prisma.$transaction(async tx => {
     await tx.order.deleteMany({ where: { userId: id } });
     const result = await tx.user.delete({

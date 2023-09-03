@@ -7,11 +7,17 @@ import { ICreateOrderedBook } from './order.interface';
 
 const createOrder = async (
   payload: ICreateOrderedBook,
-  userId: string
+  user: JwtPayload
 ): Promise<Order> => {
+  if (user?.role !== 'customer') {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You are not authorized to create'
+    );
+  }
   const result = await prisma.order.create({
     data: {
-      userId: userId,
+      userId: user?.id,
       orderedBooks: payload.orderedBooks,
     },
   });

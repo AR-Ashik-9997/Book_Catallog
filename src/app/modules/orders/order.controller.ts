@@ -8,8 +8,8 @@ import { OrderService } from './order.service';
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const { ...orderData } = req.body;
-  const userId = req?.user?.id;
-  const result = await OrderService.createOrder(orderData, userId);
+  const user: JwtPayload = req.user!;
+  const result = await OrderService.createOrder(orderData, user);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
