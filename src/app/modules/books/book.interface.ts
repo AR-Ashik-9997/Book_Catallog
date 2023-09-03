@@ -4,7 +4,7 @@ export type IBookFilter = {
   categoryId?: string | undefined;
   genre?: string | undefined;
   author?: string | undefined;
-  price?: number | undefined;
+  price?: string | undefined;
   maxPrice?: string | undefined;
   minPrice?: string | undefined;
 };
