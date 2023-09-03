@@ -1,9 +1,10 @@
 export type IBookFilter = {
-  search?: string;
-  category?: string;
-  genre?: string;
-  author?: string;
-  price?: string;
-  maxPrice?: string;
-  minPrice?: string;
+  search?: string | undefined;
+  category?: string | undefined;
+  categoryId?: string | undefined;
+  genre?: string | undefined;
+  author?: string | undefined;
+  price?: number | undefined;
+  maxPrice?: string | undefined;
+  minPrice?: string | undefined;
 };

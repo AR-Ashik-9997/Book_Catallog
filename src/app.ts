@@ -24,11 +24,11 @@ app.use(globalErrorHandler);
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(httpStatus.NOT_FOUND).json({
     success: false,
-    message: 'Not Found',
+    message: 'Welcome',
     errorMessages: [
       {
         path: req.originalUrl,
-        message: 'API Not Found',
+        message: 'Welcome to the application',
       },
     ],
   });

@@ -8,4 +8,5 @@ export const BookFilterableFields: string[] = [
   'price',
   'genre',
   'author',
+  'categoryId',
 ];
