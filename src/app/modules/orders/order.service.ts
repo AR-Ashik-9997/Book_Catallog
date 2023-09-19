@@ -17,7 +17,7 @@ const createOrder = async (
   }
   const result = await prisma.order.create({
     data: {
-      userId: user?.id,
+      userId: user?.userId,
       orderedBooks: payload.orderedBooks,
     },
   });
@@ -28,7 +28,7 @@ const getAllOrder = async (user: JwtPayload): Promise<Order[]> => {
   if (user.role === 'customer') {
     const result = await prisma.order.findMany({
       where: {
-        userId: user.id,
+        userId: user.userId,
       },
     });
     return result;
@@ -38,16 +38,26 @@ const getAllOrder = async (user: JwtPayload): Promise<Order[]> => {
   }
 };
 
-const getSingleOrder = async (id: string): Promise<Order | null> => {
-  const result = await prisma.order.findUnique({
-    where: {
-      id,
-    },
+const getSingleOrder = async (
+  id: string,
+  user: JwtPayload
+): Promise<Order | null> => {
+  const existngorder = await prisma.order.findFirst({
+    where: { userId: user.userId },
   });
-  if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+  if (existngorder && user.role === 'customer') {
+    return await prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
+  } else {
+    return await prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
   }
-  return result;
 };
 
 export const OrderService = {

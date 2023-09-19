@@ -28,14 +28,14 @@ const LoginUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
   if (user?.password !== payload?.password) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Password is incorrect');
   }
-  const { id, role } = user;
+  const { id:userId, role } = user;
   const token = jwtHelpers.createToken(
-    { id, role },
+    { userId, role },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
   const refreshToken = jwtHelpers.createToken(
-    { id, role },
+    { userId, role },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
   );

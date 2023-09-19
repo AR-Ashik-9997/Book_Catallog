@@ -12,7 +12,7 @@ const getProfile = async (
 ): Promise<Omit<User, 'id'> | null> => {
   const result = await prisma.user.findUnique({
     where: {
-      id: user.id,
+      id: user.userId,
     },
   });
   if (!result) {

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import config from '../../../config';
 import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
+import sendResponse, { sendLoginResponse } from '../../../shared/sendResponse';
 import { IUserLoginResponse } from './auth.interface';
 import { AuthService } from './auth.service';
 
@@ -26,11 +26,11 @@ const LoginUser = catchAsync(async (req: Request, res: Response) => {
     httpOnly: true,
   };
   res.cookie('refreshToken', refreshToken, cookie);
-  sendResponse<IUserLoginResponse>(res, {
+  sendLoginResponse<IUserLoginResponse>(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'User signin successfully!',
-    data: other,
+    token: other.token as any,
   });
 });
 
