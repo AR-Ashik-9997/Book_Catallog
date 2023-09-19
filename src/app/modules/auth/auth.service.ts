@@ -9,6 +9,14 @@ import prisma from '../../../shared/prisma';
 import { ILoginUser, IUserLoginResponse } from './auth.interface';
 
 const createUser = async (payload: User): Promise<Omit<User, 'password'>> => {
+  const user = await prisma.user.findFirst({
+    where: {
+      email: payload.email,
+    },
+  });
+  if (user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User already exists');
+  }
   const result = await prisma.user.create({
     data: payload,
   });
@@ -25,10 +33,10 @@ const LoginUser = async (payload: ILoginUser): Promise<IUserLoginResponse> => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  if (user?.password !== payload?.password) {
+  if (user && user?.password !== payload?.password) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Password is incorrect');
   }
-  const { id:userId, role } = user;
+  const { id: userId, role } = user;
   const token = jwtHelpers.createToken(
     { userId, role },
     config.jwt.secret as Secret,
